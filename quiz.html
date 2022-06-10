@@ -7,7 +7,7 @@
         <title>Quiz</title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-<body onload = "chooseQuestion();chooseChoices()">
+<body onload = "checkQuiz()">
     <section>
         <div id = "quizQuestion" class="question">問題文</div>
         <div id = "divchoices">
@@ -74,6 +74,15 @@
 
         //選択肢と正解と問題文 ["正解","選択肢","選択肢","選択肢","選択肢","問題文"]
         let quizes = JSON.parse(sessionStorage.getItem("array"));
+        
+        //問題文の受け取り確認
+        const checkQuiz = function () {
+            if (quizes === null) {
+                location.href="index.html";
+            };
+            chooseQuestion();
+            chooseChoices();
+        };
 
         //出題順格納
         let quiznum = [...Array(quizes.length - 1)].map((_, i) =>1 + i);
@@ -137,14 +146,12 @@
             } else {
                 scoreView.textContent = "不正解 " + (clearTime[right + wrong]/1000).toFixed(3) + "秒";
                 wrong++;
-            }
-            if (right + wrong == quizes.length - 1) {
+            };
+            if (right + wrong == quizes.length - 1||wrong == MISS) {
                 result();
-            } else if(wrong == MISS){
-                result();
-            } else {
-                chooseChoices();
-            }
+                return;
+            };
+            chooseChoices();
             document.activeElement.blur();
         };
 
@@ -156,13 +163,11 @@
             timeGaugeView.innerHTML = "";
             wrong++;
             out++;
-            if(right + wrong == quizes.length - 1){
+            if(right + wrong == quizes.length - 1||wrong == MISS){
                 result();
-            } else if(wrong == MISS){
-                result();
-            } else {
-                chooseChoices();
-            }
+                return;
+            };
+            chooseChoices();
         };
 
         //スタートの処理
